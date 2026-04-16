@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Liste des offres</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+  .nav-logo { font-size: 15px; font-weight: 600; }
+  .nav-links { display: flex; gap: 8px; }
+  .btn { padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; }
+  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  .search-bar { display: flex; gap: 10px; padding: 16px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+  .search-input { flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+  select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fff; color: #444; }
+
+  .filters { display: flex; gap: 8px; padding: 12px 24px; background: #f5f7f9; border-bottom: 1px solid #dde1e7; flex-wrap: wrap; }
+  .chip { padding: 5px 14px; border-radius: 999px; border: 1px solid #ccc; background: transparent; font-size: 12px; color: #555; cursor: pointer; }
+  .chip-active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  .results-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; font-size: 12px; color: #888; }
+
+  .main { padding: 16px 24px 32px; }
+  .offers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .offers-grid { grid-template-columns: 1fr 1fr; } }
+  .offer-card { background: #fff; border: 1px solid #dde1e7; border-radius: 8px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s; }
+  .offer-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .offer-img { height: 110px; background: #e4e8ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; }
+  .offer-body { padding: 10px 12px; }
+  .offer-title { font-size: 13px; font-weight: 500; }
+  .offer-price { font-size: 15px; font-weight: 700; margin-top: 4px; }
+  .offer-meta { display: flex; justify-content: space-between; margin-top: 4px; }
+  .offer-loc { font-size: 11px; color: #888; }
+  .offer-date { font-size: 11px; color: #bbb; }
+
+  .load-more { text-align: center; margin-top: 24px; }
+
+  .badge { display: inline-block; background: #fff3cd; border: 1px solid #f0c040; color: #7a5a00; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">RecycloMarché </span>
+  <div class="nav-links">
+    <button class="btn">Mon compte</button>
+    <button class="btn btn-primary">+ Publier une annonce</button>
+  </div>
+</nav>
+
+<div class="search-bar">
+  <input class="search-input" type="text" placeholder="Rechercher une offre..." value="vélo" />
+  <select>
+    <option>Trier : plus récent</option>
+    <option>Prix croissant</option>
+    <option>Prix décroissant</option>
+  </select>
+  <button class="btn btn-primary">Rechercher</button>
+</div>
+
+<div class="filters">
+  <span>Catégorie :</span>
+  <button class="chip chip-active">Toutes</button>
+  <button class="chip">Électronique</button>
+  <button class="chip">Mobilier</button>
+  <button class="chip">Vêtements</button>
+  <button class="chip">Sports & Loisirs</button>
+  <button class="chip">Livres</button>
+  <button class="chip">Jardinage</button>
+  <button class="chip">Autre</button>
+</div>
+
+<div class="results-bar">
+  <span>42 offres trouvées</span>
+  <span>Page 1 / 7</span>
+</div>
+
+<div class="main">
+  <div class="offers-grid">
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Vélo de ville 7 vitesses</div>
+        <div class="offer-price">85 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville1</span><span class="offer-date">2 avr.</span></div>
+      </div>
+    </div>
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Table basse scandinave</div>
+        <div class="offer-price">45 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville2</span><span class="offer-date">1 avr.</span></div>
+      </div>
+    </div>
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Guitare acoustique</div>
+        <div class="offer-price">180 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville3</span><span class="offer-date">31 mars</span></div>
+      </div>
+    </div>
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Chaussures running T42</div>
+        <div class="offer-price">20 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville4</span><span class="offer-date">30 mars</span></div>
+      </div>
+    </div>
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Trottinette électrique</div>
+        <div class="offer-price">60 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville5</span><span class="offer-date">29 mars</span></div>
+      </div>
+    </div>
+    <div class="offer-card">
+      <div class="offer-img">[photo]</div>
+      <div class="offer-body">
+        <div class="offer-title">Machine à coudre Singer</div>
+        <div class="offer-price">35 €</div>
+        <div class="offer-meta"><span class="offer-loc">Ville6</span><span class="offer-date">28 mars</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="load-more">
+    <button class="btn">Charger plus d'offres</button>
+  </div>
+</div>
+
+</body>
+</html>
