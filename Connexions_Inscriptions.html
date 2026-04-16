@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Connexion / Inscription</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+  .nav-logo { font-size: 15px; font-weight: 600; }
+
+  .page-center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+  .card { background: #fff; border: 1px solid #dde1e7; border-radius: 10px; width: 100%; max-width: 400px; overflow: hidden; }
+  .card-header { padding: 24px 28px 0; }
+  .card-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .card-sub { font-size: 13px; color: #888; }
+
+  .tabs { display: flex; border-bottom: 1px solid #dde1e7; margin-top: 20px; }
+  .tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+  .tab-active { color: #1a1a1a; font-weight: 600; border-bottom-color: #1a1a1a; }
+
+  .card-body { padding: 22px 28px; }
+  .form-group { margin-bottom: 14px; }
+  label { display: block; font-size: 12px; font-weight: 500; color: #555; margin-bottom: 5px; }
+  input { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; color: #1a1a1a; background: #fff; }
+  input:focus { outline: none; border-color: #888; }
+  .form-hint { font-size: 11px; color: #aaa; margin-top: 3px; }
+  .btn-full { width: 100%; padding: 11px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; margin-top: 4px; }
+  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .link-muted { display: block; text-align: center; font-size: 12px; color: #888; margin-top: 10px; cursor: pointer; text-decoration: underline; }
+  .divider { height: 1px; background: #e0ddd5; margin: 18px 0; }
+  .register-note { font-size: 12px; color: #888; text-align: center; margin-bottom: 14px; }
+
+  /* The second tab content (inscription) shown grayed out to indicate it's inactive */
+  .tab-content { display: none; }
+  .tab-content-active { display: block; }
+
+  .badge { display: inline-block; background: #fff3cd; border: 1px solid #f0c040; color: #7a5a00; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">RecycloMarché </span>
+</nav>
+
+<div class="page-center">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Bienvenue</div>
+      <div class="card-sub">Accédez à votre espace ou créez un compte.</div>
+      <div class="tabs">
+        <div class="tab tab-active" id="tab-login" onclick="showTab('login')">Se connecter</div>
+        <div class="tab" id="tab-register" onclick="showTab('register')">Créer un compte</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- CONNEXION -->
+      <div id="panel-login" class="tab-content tab-content-active">
+        <div class="form-group">
+          <label>Adresse e-mail</label>
+          <input type="email" placeholder="prenom.nom@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" placeholder="••••••••" />
+        </div>
+        <button class="btn-full btn-primary">Se connecter</button>
+        <a class="link-muted">Mot de passe oublié ?</a>
+      </div>
+
+      <!-- INSCRIPTION -->
+      <div id="panel-register" class="tab-content">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" placeholder="Marie" />
+        </div>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" placeholder="Dupont" />
+        </div>
+        <div class="form-group">
+          <label>Adresse e-mail</label>
+          <input type="email" placeholder="prenom.nom@email.com" />
+          <div class="form-hint">Sera utilisé comme identifiant de connexion.</div>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" placeholder="••••••••" />
+          <div class="form-hint">Minimum 8 caractères.</div>
+        </div>
+        <div class="form-group">
+          <label>Ville / Code postal</label>
+          <input type="text" placeholder="Ville1, XXXXX" />
+          <div class="form-hint">Visible sur vos annonces. La ville suffit.</div>
+        </div>
+        <button class="btn-full btn-primary">Créer mon compte</button>
+        <p style="font-size:11px;color:#aaa;margin-top:10px;text-align:center;">En vous inscrivant, vous acceptez les conditions d'utilisation.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(name) {
+  document.getElementById('panel-login').classList.remove('tab-content-active');
+  document.getElementById('panel-register').classList.remove('tab-content-active');
+  document.getElementById('tab-login').classList.remove('tab-active');
+  document.getElementById('tab-register').classList.remove('tab-active');
+  document.getElementById('panel-' + name).classList.add('tab-content-active');
+  document.getElementById('tab-' + name).classList.add('tab-active');
+}
+</script>
+</body>
+</html>
