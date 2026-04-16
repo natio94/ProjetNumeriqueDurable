@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Interface d'administration</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #1a1a1a; color: #fff; }
+  .nav-logo { font-size: 15px; font-weight: 600; }
+  .nav-right { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #bbb; }
+  .btn-light { padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid #555; background: transparent; color: #ccc; }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 28px 24px; }
+  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .page-sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 700px) { .metrics { grid-template-columns: 1fr 1fr; } }
+  .metric { background: #fff; border: 1px solid #dde1e7; border-radius: 8px; padding: 16px; }
+  .metric-val { font-size: 28px; font-weight: 700; }
+  .metric-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+  .tabs { display: flex; border-bottom: 1px solid #dde1e7; margin-bottom: 16px; }
+  .tab { padding: 10px 16px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+  .tab-active { color: #1a1a1a; font-weight: 600; border-bottom-color: #1a1a1a; }
+
+  .panel { display: none; }
+  .panel-active { display: block; }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .search-input { padding: 7px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; width: 240px; }
+  .btn { padding: 7px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; }
+  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-danger-sm { padding: 4px 10px; font-size: 12px; border: 1px solid #c0392b; color: #c0392b; border-radius: 6px; background: transparent; cursor: pointer; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dde1e7; border-radius: 8px; overflow: hidden; font-size: 13px; }
+  thead { background: #f5f7f9; }
+  th { text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 600; color: #555; border-bottom: 1px solid #dde1e7; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e8ecf0; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f5f7f9; }
+
+  .status-active { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef8ee; color: #3a8a3a; border: 1px solid #b5d5b5; }
+  .status-inactive { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #ebeef2; color: #888; border: 1px solid #ddd; }
+  .status-expired { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #f5f7e8; color: #a07030; border: 1px solid #e0c888; }
+
+  .action-cell { display: flex; gap: 6px; }
+  .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
+  .page-btn { padding: 5px 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; background: #fff; cursor: pointer; color: #444; }
+  .page-btn-active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  .badge { display: inline-block; background: #fff3cd; border: 1px solid #f0c040; color: #7a5a00; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">RecycloMarché · Administration </span>
+  <div class="nav-right">
+    <span>Admin : Prénom6 N6</span>
+    <button class="btn-light">Se déconnecter</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <div class="page-title">Tableau de bord</div>
+  <div class="page-sub">Vue globale de la plateforme.</div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-val">128</div><div class="metric-label">Comptes vendeurs</div></div>
+    <div class="metric"><div class="metric-val">342</div><div class="metric-label">Offres actives</div></div>
+    <div class="metric"><div class="metric-val">17</div><div class="metric-label">Offres expirées</div></div>
+    <div class="metric"><div class="metric-val">8</div><div class="metric-label">Nouveaux aujourd'hui</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab tab-active" onclick="showTab('accounts')">Comptes vendeurs</div>
+    <div class="tab" onclick="showTab('offers')">Toutes les offres</div>
+  </div>
+
+  <!-- PANEL : COMPTES -->
+  <div id="panel-accounts" class="panel panel-active">
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Rechercher un compte..." />
+      <button class="btn btn-primary">+ Créer un compte</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom</th>
+          <th>E-mail</th>
+          <th>Ville</th>
+          <th>Offres</th>
+          <th>Inscription</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>001</td>
+          <td>Prénom1 Nom1</td>
+          <td>prenom1.nom1@…</td>
+          <td>Ville1</td>
+          <td>3</td>
+          <td>mars 2024</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Prénom2 Nom2</td>
+          <td>prenom2.nom2@…</td>
+          <td>Ville2</td>
+          <td>1</td>
+          <td>jan. 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>003</td>
+          <td>Prénom3 Nom3</td>
+          <td>prenom3.nom3@…</td>
+          <td>Ville4</td>
+          <td>0</td>
+          <td>fév. 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>004</td>
+          <td>Prénom4 Nom4</td>
+          <td>prenom4.nom4@…</td>
+          <td>Ville3</td>
+          <td>5</td>
+          <td>nov. 2023</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>005</td>
+          <td>Prénom5 Nom5</td>
+          <td>prenom5.nom5@…</td>
+          <td>Ville5</td>
+          <td>2</td>
+          <td>avr. 2024</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button class="page-btn page-btn-active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">…</button>
+      <button class="page-btn">26</button>
+    </div>
+  </div>
+
+  <!-- PANEL : OFFRES -->
+  <div id="panel-offers" class="panel">
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Rechercher une offre..." />
+      <button class="btn btn-primary">+ Créer une offre</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Titre</th>
+          <th>Vendeur</th>
+          <th>Catégorie</th>
+          <th>Prix</th>
+          <th>Publiée le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>00412</td>
+          <td>Vélo de ville 7 vitesses</td>
+          <td>Prénom1 N1</td>
+          <td>Mobilité</td>
+          <td>85 €</td>
+          <td>2 avr. 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>00411</td>
+          <td>Table basse scandinave</td>
+          <td>Prénom2 N2</td>
+          <td>Mobilier</td>
+          <td>45 €</td>
+          <td>1 avr. 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>00389</td>
+          <td>Veste en jean T38</td>
+          <td>Prénom1 N1</td>
+          <td>Vêtements</td>
+          <td>25 €</td>
+          <td>1 jan. 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>00401</td>
+          <td>Guitare acoustique</td>
+          <td>Prénom4 N4</td>
+          <td>Loisirs</td>
+          <td>180 €</td>
+          <td>31 mars 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+        <tr>
+          <td>00395</td>
+          <td>Machine à coudre Singer</td>
+          <td>Prénom5 N5</td>
+          <td>Électroménager</td>
+          <td>35 €</td>
+          <td>28 mars 2025</td>
+          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button class="page-btn page-btn-active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">…</button>
+      <button class="page-btn">72</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.getElementById('panel-accounts').classList.remove('panel-active');
+  document.getElementById('panel-offers').classList.remove('panel-active');
+  do
