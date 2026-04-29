@@ -61,55 +61,8 @@
 
 <div class="section">
   <div class="section-title">Dernières offres publiées</div>
-  <div class="offers-grid">
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Vélo de ville</div>
-        <div class="offer-price">85 €</div>
-        <div class="offer-loc">Ville1</div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Canapé 3 places</div>
-        <div class="offer-price">120 €</div>
-        <div class="offer-loc">Ville2</div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Machine à coudre</div>
-        <div class="offer-price">35 €</div>
-        <div class="offer-loc">Ville3</div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Trottinette</div>
-        <div class="offer-price">60 €</div>
-        <div class="offer-loc">Ville4</div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Lampe de bureau</div>
-        <div class="offer-price">15 €</div>
-        <div class="offer-loc">Ville6</div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Guitare acoustique</div>
-        <div class="offer-price">180 €</div>
-        <div class="offer-loc">Ville5</div>
-      </div>
-    </div>
+  <div class="offers-grid" id="offers-grid">
+    <p style="color:#888;font-size:13px;">Chargement des offres…</p>
   </div>
   <div style="text-align:center; margin-top:20px;">
     <button class="btn">Voir toutes les offres →</button>
@@ -125,5 +78,29 @@
   RecycloMarché · Marketplace entre particuliers · Zéro publicité · Données minimales
 </footer>
 
+<script>
+  fetch('api/offres.php')
+    .then(r => r.json())
+    .then(offres => {
+      const grid = document.getElementById('offers-grid');
+      if (!offres.length) {
+        grid.innerHTML = '<p style="color:#888;font-size:13px;">Aucune offre disponible.</p>';
+        return;
+      }
+      grid.innerHTML = offres.slice(0, 6).map(o => `
+        <div class="offer-card" onclick="window.location='Detail_Offre.html?id=${o.id}'" style="cursor:pointer">
+          <div class="offer-img">[photo]</div>
+          <div class="offer-body">
+            <div class="offer-title">${o.title}</div>
+            <div class="offer-price">${o.price} &euro;</div>
+            <div class="offer-loc">${o.postal_code}</div>
+          </div>
+        </div>`).join('');
+    })
+    .catch(() => {
+      document.getElementById('offers-grid').innerHTML =
+        '<p style="color:#c00;font-size:13px;">Impossible de charger les offres.</p>';
+    });
+</script>
 </body>
 </html>

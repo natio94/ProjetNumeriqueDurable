@@ -54,87 +54,104 @@
 </nav>
 
 <div class="search-bar">
-  <input class="search-input" type="text" placeholder="Rechercher une offre..." value="vélo" />
+  <input class="search-input" id="search-input" type="text" placeholder="Rechercher une offre..." />
   <select>
     <option>Trier : plus récent</option>
     <option>Prix croissant</option>
     <option>Prix décroissant</option>
   </select>
-  <button class="btn btn-primary">Rechercher</button>
+  <button class="btn btn-primary" onclick="rechercherOffres()">Rechercher</button>
 </div>
 
 <div class="filters">
-  <span>Catégorie :</span>
-  <button class="chip chip-active">Toutes</button>
-  <button class="chip">Électronique</button>
-  <button class="chip">Mobilier</button>
-  <button class="chip">Vêtements</button>
-  <button class="chip">Sports & Loisirs</button>
-  <button class="chip">Livres</button>
-  <button class="chip">Jardinage</button>
-  <button class="chip">Autre</button>
+  <span>Cat&eacute;gorie :</span>
+  <button class="chip chip-active" data-cat="" onclick="filtrerCategorie(this)">Toutes</button>
+  <button class="chip" data-cat="Electronique" onclick="filtrerCategorie(this)">&Eacute;lectronique</button>
+  <button class="chip" data-cat="Mobilier" onclick="filtrerCategorie(this)">Mobilier</button>
+  <button class="chip" data-cat="Vetements" onclick="filtrerCategorie(this)">V&ecirc;tements</button>
+  <button class="chip" data-cat="Sports" onclick="filtrerCategorie(this)">Sports &amp; Loisirs</button>
+  <button class="chip" data-cat="Livres" onclick="filtrerCategorie(this)">Livres</button>
+  <button class="chip" data-cat="Jardinage" onclick="filtrerCategorie(this)">Jardinage</button>
+  <button class="chip" data-cat="Autre" onclick="filtrerCategorie(this)">Autre</button>
 </div>
 
 <div class="results-bar">
-  <span>42 offres trouvées</span>
-  <span>Page 1 / 7</span>
+  <span id="results-count">Chargement…</span>
 </div>
 
 <div class="main">
-  <div class="offers-grid">
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Vélo de ville 7 vitesses</div>
-        <div class="offer-price">85 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville1</span><span class="offer-date">2 avr.</span></div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Table basse scandinave</div>
-        <div class="offer-price">45 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville2</span><span class="offer-date">1 avr.</span></div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Guitare acoustique</div>
-        <div class="offer-price">180 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville3</span><span class="offer-date">31 mars</span></div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Chaussures running T42</div>
-        <div class="offer-price">20 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville4</span><span class="offer-date">30 mars</span></div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Trottinette électrique</div>
-        <div class="offer-price">60 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville5</span><span class="offer-date">29 mars</span></div>
-      </div>
-    </div>
-    <div class="offer-card">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-body">
-        <div class="offer-title">Machine à coudre Singer</div>
-        <div class="offer-price">35 €</div>
-        <div class="offer-meta"><span class="offer-loc">Ville6</span><span class="offer-date">28 mars</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="load-more">
-    <button class="btn">Charger plus d'offres</button>
+  <div class="offers-grid" id="offers-grid">
+    <p style="color:#888;font-size:13px;">Chargement des offres&hellip;</p>
   </div>
 </div>
 
+<script>
+  let toutesLesOffres = [];
+  let categorieActive = '';
+
+  function afficherOffres(offres) {
+    const grid = document.getElementById('offers-grid');
+    const count = document.getElementById('results-count');
+    count.textContent = offres.length + ' offre' + (offres.length > 1 ? 's' : '') + ' trouv' + (offres.length > 1 ? 'ées' : 'ée');
+    if (!offres.length) {
+      grid.innerHTML = '<p style="color:#888;font-size:13px;">Aucune offre ne correspond.</p>';
+      return;
+    }
+    grid.innerHTML = offres.map(o => `
+      <div class="offer-card" onclick="window.location='Detail_Offre.html?id=${o.id}'" style="cursor:pointer">
+        <div class="offer-img">[photo]</div>
+        <div class="offer-body">
+          <div class="offer-title">${o.title}</div>
+          <div class="offer-price">${o.price} &euro;</div>
+          <div class="offer-meta">
+            <span class="offer-loc">${o.postal_code}</span>
+            <span class="offer-date">${o.categorie}</span>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function filtrerCategorie(btn) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('chip-active'));
+    btn.classList.add('chip-active');
+    categorieActive = btn.dataset.cat;
+    appliquerFiltres();
+  }
+
+  function appliquerFiltres() {
+    let resultats = toutesLesOffres;
+    if (categorieActive) {
+      resultats = resultats.filter(o =>
+        o.categorie && o.categorie.toLowerCase().includes(categorieActive.toLowerCase())
+      );
+    }
+    afficherOffres(resultats);
+  }
+
+  function rechercherOffres() {
+    const search = document.getElementById('search-input').value.trim();
+    const params = search ? '?search=' + encodeURIComponent(search) : '';
+    document.getElementById('results-count').textContent = 'Recherche en cours…';
+    fetch('api/offres.php' + params)
+      .then(r => r.json())
+      .then(offres => {
+        toutesLesOffres = offres;
+        categorieActive = '';
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('chip-active'));
+        document.querySelector('.chip[data-cat=""]').classList.add('chip-active');
+        afficherOffres(toutesLesOffres);
+      })
+      .catch(() => {
+        document.getElementById('offers-grid').innerHTML =
+          '<p style="color:#c00;font-size:13px;">Impossible de charger les offres.</p>';
+      });
+  }
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') rechercherOffres();
+  });
+
+  rechercherOffres();
+</script>
 </body>
 </html>

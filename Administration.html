@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wireframe — Interface d'administration</title>
+<title>Wireframe &mdash; Interface d'administration</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
@@ -45,24 +45,16 @@
   tr:hover td { background: #f5f7f9; }
 
   .status-active { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef8ee; color: #3a8a3a; border: 1px solid #b5d5b5; }
-  .status-inactive { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #ebeef2; color: #888; border: 1px solid #ddd; }
-  .status-expired { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #f5f7e8; color: #a07030; border: 1px solid #e0c888; }
-
   .action-cell { display: flex; gap: 6px; }
-  .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
-  .page-btn { padding: 5px 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; background: #fff; cursor: pointer; color: #444; }
-  .page-btn-active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-
-  .badge { display: inline-block; background: #fff3cd; border: 1px solid #f0c040; color: #7a5a00; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <span class="nav-logo">RecycloMarché · Administration </span>
+  <span class="nav-logo">RecycloMarch&eacute; &middot; Administration</span>
   <div class="nav-right">
-    <span>Admin : Prénom6 N6</span>
-    <button class="btn-light">Se déconnecter</button>
+    <span>Administration</span>
+    <button class="btn-light">Se d&eacute;connecter</button>
   </div>
 </nav>
 
@@ -72,173 +64,152 @@
   <div class="page-sub">Vue globale de la plateforme.</div>
 
   <div class="metrics">
-    <div class="metric"><div class="metric-val">128</div><div class="metric-label">Comptes vendeurs</div></div>
-    <div class="metric"><div class="metric-val">342</div><div class="metric-label">Offres actives</div></div>
-    <div class="metric"><div class="metric-val">17</div><div class="metric-label">Offres expirées</div></div>
-    <div class="metric"><div class="metric-val">8</div><div class="metric-label">Nouveaux aujourd'hui</div></div>
+    <div class="metric"><div class="metric-val" id="stat-vendeurs">…</div><div class="metric-label">Comptes vendeurs</div></div>
+    <div class="metric"><div class="metric-val" id="stat-offres">…</div><div class="metric-label">Offres actives</div></div>
+    <div class="metric"><div class="metric-val">—</div><div class="metric-label">Offres expir&eacute;es</div></div>
+    <div class="metric"><div class="metric-val">—</div><div class="metric-label">Nouveaux aujourd'hui</div></div>
   </div>
 
   <div class="tabs">
-    <div class="tab tab-active" onclick="showTab('accounts')">Comptes vendeurs</div>
-    <div class="tab" onclick="showTab('offers')">Toutes les offres</div>
+    <div class="tab tab-active" onclick="showTab('accounts', this)">Comptes vendeurs</div>
+    <div class="tab" onclick="showTab('offers', this)">Toutes les offres</div>
   </div>
 
   <!-- PANEL : COMPTES -->
   <div id="panel-accounts" class="panel panel-active">
     <div class="toolbar">
-      <input class="search-input" type="text" placeholder="Rechercher un compte..." />
-      <button class="btn btn-primary">+ Créer un compte</button>
+      <input class="search-input" id="search-accounts" type="text" placeholder="Rechercher un compte..." oninput="filtrerComptes()" />
+      <button class="btn btn-primary">+ Cr&eacute;er un compte</button>
     </div>
     <table>
       <thead>
         <tr>
-          <th>#</th>
+          <th>Pr&eacute;nom</th>
           <th>Nom</th>
-          <th>E-mail</th>
-          <th>Ville</th>
-          <th>Offres</th>
-          <th>Inscription</th>
+          <th>Code postal</th>
+          <th>R&ocirc;le</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>001</td>
-          <td>Prénom1 Nom1</td>
-          <td>prenom1.nom1@…</td>
-          <td>Ville1</td>
-          <td>3</td>
-          <td>mars 2024</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>002</td>
-          <td>Prénom2 Nom2</td>
-          <td>prenom2.nom2@…</td>
-          <td>Ville2</td>
-          <td>1</td>
-          <td>jan. 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>003</td>
-          <td>Prénom3 Nom3</td>
-          <td>prenom3.nom3@…</td>
-          <td>Ville4</td>
-          <td>0</td>
-          <td>fév. 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>004</td>
-          <td>Prénom4 Nom4</td>
-          <td>prenom4.nom4@…</td>
-          <td>Ville3</td>
-          <td>5</td>
-          <td>nov. 2023</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>005</td>
-          <td>Prénom5 Nom5</td>
-          <td>prenom5.nom5@…</td>
-          <td>Ville5</td>
-          <td>2</td>
-          <td>avr. 2024</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
+      <tbody id="tbody-accounts">
+        <tr><td colspan="5" style="color:#888;text-align:center;">Chargement&hellip;</td></tr>
       </tbody>
     </table>
-    <div class="pagination">
-      <button class="page-btn page-btn-active">1</button>
-      <button class="page-btn">2</button>
-      <button class="page-btn">3</button>
-      <button class="page-btn">…</button>
-      <button class="page-btn">26</button>
-    </div>
   </div>
-
- 
 
   <!-- PANEL : OFFRES -->
   <div id="panel-offers" class="panel">
     <div class="toolbar">
-      <input class="search-input" type="text" placeholder="Rechercher une offre..." />
-      <button class="btn btn-primary">+ Créer une offre</button>
+      <input class="search-input" id="search-offers" type="text" placeholder="Rechercher une offre..." oninput="filtrerOffres()" />
+      <button class="btn btn-primary">+ Cr&eacute;er une offre</button>
     </div>
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Titre</th>
           <th>Vendeur</th>
-          <th>Catégorie</th>
+          <th>Cat&eacute;gorie</th>
           <th>Prix</th>
-          <th>Publiée le</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>00412</td>
-          <td>Vélo de ville 7 vitesses</td>
-          <td>Prénom1 N1</td>
-          <td>Mobilité</td>
-          <td>85 €</td>
-          <td>2 avr. 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>00411</td>
-          <td>Table basse scandinave</td>
-          <td>Prénom2 N2</td>
-          <td>Mobilier</td>
-          <td>45 €</td>
-          <td>1 avr. 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>00389</td>
-          <td>Veste en jean T38</td>
-          <td>Prénom1 N1</td>
-          <td>Vêtements</td>
-          <td>25 €</td>
-          <td>1 jan. 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>00401</td>
-          <td>Guitare acoustique</td>
-          <td>Prénom4 N4</td>
-          <td>Loisirs</td>
-          <td>180 €</td>
-          <td>31 mars 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
-        <tr>
-          <td>00395</td>
-          <td>Machine à coudre Singer</td>
-          <td>Prénom5 N5</td>
-          <td>Électroménager</td>
-          <td>35 €</td>
-          <td>28 mars 2025</td>
-          <td><div class="action-cell"><button class="btn btn-sm">Modifier</button><button class="btn-danger-sm">Supprimer</button></div></td>
-        </tr>
+      <tbody id="tbody-offers">
+        <tr><td colspan="5" style="color:#888;text-align:center;">Chargement&hellip;</td></tr>
       </tbody>
     </table>
-    <div class="pagination">
-      <button class="page-btn page-btn-active">1</button>
-      <button class="page-btn">2</button>
-      <button class="page-btn">3</button>
-      <button class="page-btn">…</button>
-      <button class="page-btn">72</button>
-    </div>
   </div>
 
 </div>
 
 <script>
-function showTab(name) {
-  document.getElementById('panel-accounts').classList.remove('panel-active');
-  document.getElementById('panel-offers').classList.remove('panel-active');
-  do
+  let tousLesComptes = [];
+  let toutesLesOffres = [];
+
+  function showTab(name, btn) {
+    document.getElementById('panel-accounts').classList.remove('panel-active');
+    document.getElementById('panel-offers').classList.remove('panel-active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+    document.getElementById('panel-' + name).classList.add('panel-active');
+    btn.classList.add('tab-active');
+  }
+
+  function ligneCompte(v) {
+    return `<tr>
+      <td>${v.prenom || '—'}</td>
+      <td>${v.nom || '—'}</td>
+      <td>${v.postal_code || '—'}</td>
+      <td><span class="status-active">${v.role || 'vendeur'}</span></td>
+      <td><div class="action-cell">
+        <button class="btn btn-sm">Modifier</button>
+        <button class="btn-danger-sm">Supprimer</button>
+      </div></td>
+    </tr>`;
+  }
+
+  function ligneOffre(o) {
+    return `<tr>
+      <td>${o.title}</td>
+      <td>${o.prenom || ''} ${o.nom ? o.nom[0] + '.' : ''}</td>
+      <td>${o.categorie || '—'}</td>
+      <td>${o.price} &euro;</td>
+      <td><div class="action-cell">
+        <button class="btn btn-sm">Modifier</button>
+        <button class="btn-danger-sm">Supprimer</button>
+      </div></td>
+    </tr>`;
+  }
+
+  function filtrerComptes() {
+    const q = document.getElementById('search-accounts').value.toLowerCase();
+    const resultats = tousLesComptes.filter(v =>
+      (v.nom || '').toLowerCase().includes(q) ||
+      (v.prenom || '').toLowerCase().includes(q) ||
+      (v.postal_code || '').toLowerCase().includes(q)
+    );
+    document.getElementById('tbody-accounts').innerHTML =
+      resultats.length ? resultats.map(ligneCompte).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun r&eacute;sultat.</td></tr>';
+  }
+
+  function filtrerOffres() {
+    const q = document.getElementById('search-offers').value.toLowerCase();
+    const resultats = toutesLesOffres.filter(o =>
+      (o.title || '').toLowerCase().includes(q) ||
+      (o.categorie || '').toLowerCase().includes(q)
+    );
+    document.getElementById('tbody-offers').innerHTML =
+      resultats.length ? resultats.map(ligneOffre).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun r&eacute;sultat.</td></tr>';
+  }
+
+  fetch('api/vendeurs.php')
+    .then(r => r.json())
+    .then(vendeurs => {
+      tousLesComptes = vendeurs;
+      document.getElementById('stat-vendeurs').textContent = vendeurs.length;
+      document.getElementById('tbody-accounts').innerHTML =
+        vendeurs.length ? vendeurs.map(ligneCompte).join('') :
+        '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun compte.</td></tr>';
+    })
+    .catch(() => {
+      document.getElementById('tbody-accounts').innerHTML =
+        '<tr><td colspan="5" style="color:#c00;text-align:center;">Impossible de charger les comptes.</td></tr>';
+    });
+
+  fetch('api/offres.php')
+    .then(r => r.json())
+    .then(offres => {
+      toutesLesOffres = offres;
+      document.getElementById('stat-offres').textContent = offres.length;
+      document.getElementById('tbody-offers').innerHTML =
+        offres.length ? offres.map(ligneOffre).join('') :
+        '<tr><td colspan="5" style="color:#888;text-align:center;">Aucune offre.</td></tr>';
+    })
+    .catch(() => {
+      document.getElementById('tbody-offers').innerHTML =
+        '<tr><td colspan="5" style="color:#c00;text-align:center;">Impossible de charger les offres.</td></tr>';
+    });
+</script>
+
+</body>
+</html>

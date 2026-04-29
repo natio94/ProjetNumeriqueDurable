@@ -140,53 +140,59 @@
 
   <!-- PANEL : MES OFFRES -->
   <div id="panel-offers" class="panel">
-    <div class="offer-row">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-info">
-        <div class="offer-title">Vélo de ville 7 vitesses</div>
-        <div class="offer-meta">85 € · Publié le 2 avr. 2025 · <span class="status-active">Active</span></div>
-      </div>
-      <div class="offer-actions">
-        <button class="btn btn-sm">Modifier</button>
-        <button class="btn-danger-sm">Supprimer</button>
-      </div>
+    <div id="mes-offres-container">
+      <p style="color:#888;font-size:13px;">Chargement de vos offres&hellip;</p>
     </div>
-    <div class="offer-row">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-info">
-        <div class="offer-title">Lampe de bureau vintage</div>
-        <div class="offer-meta">15 € · Publié le 20 mars 2025 · <span class="status-active">Active</span></div>
-      </div>
-      <div class="offer-actions">
-        <button class="btn btn-sm">Modifier</button>
-        <button class="btn-danger-sm">Supprimer</button>
-      </div>
-    </div>
-    <div class="offer-row">
-      <div class="offer-img">[photo]</div>
-      <div class="offer-info">
-        <div class="offer-title">Veste en jean T38</div>
-        <div class="offer-meta">25 € · Publié le 1 jan. 2025 · <span class="status-expired">Expirée</span></div>
-      </div>
-      <div class="offer-actions">
-        <button class="btn btn-sm">Modifier</button>
-        <button class="btn-danger-sm">Supprimer</button>
-      </div>
-    </div>
-    <div class="new-offer" onclick="">+ Publier une nouvelle offre</div>
+    <div class="new-offer">+ Publier une nouvelle offre</div>
   </div>
 
 </div>
  
 
 <script>
-function showTab(name) {
-  document.getElementById('panel-info').classList.remove('panel-active');
-  document.getElementById('panel-offers').classList.remove('panel-active');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-  document.getElementById('panel-' + name).classList.add('panel-active');
-  event.target.classList.add('tab-active');
-}
+  function showTab(name) {
+    document.getElementById('panel-info').classList.remove('panel-active');
+    document.getElementById('panel-offers').classList.remove('panel-active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+    document.getElementById('panel-' + name).classList.add('panel-active');
+    event.target.classList.add('tab-active');
+  }
+
+  const vendeurId = new URLSearchParams(window.location.search).get('vendeur_id');
+
+  if (vendeurId) {
+    fetch('api/offres.php?vendeur_id=' + encodeURIComponent(vendeurId))
+      .then(r => r.json())
+      .then(offres => {
+        const container = document.getElementById('mes-offres-container');
+        const tabOffres = document.querySelector('.tab[onclick*="offers"]');
+        if (tabOffres) tabOffres.textContent = 'Mes offres (' + offres.length + ')';
+
+        if (!offres.length) {
+          container.innerHTML = '<p style="color:#888;font-size:13px;">Vous n\'avez pas encore d\'offres publi&eacute;es.</p>';
+          return;
+        }
+        container.innerHTML = offres.map(o => `
+          <div class="offer-row">
+            <div class="offer-img">[photo]</div>
+            <div class="offer-info">
+              <div class="offer-title">${o.title}</div>
+              <div class="offer-meta">${o.price} &euro; &middot; ${o.categorie || ''} &middot; <span class="status-active">Active</span></div>
+            </div>
+            <div class="offer-actions">
+              <button class="btn btn-sm">Modifier</button>
+              <button class="btn-danger-sm">Supprimer</button>
+            </div>
+          </div>`).join('');
+      })
+      .catch(() => {
+        document.getElementById('mes-offres-container').innerHTML =
+          '<p style="color:#c00;font-size:13px;">Impossible de charger vos offres.</p>';
+      });
+  } else {
+    document.getElementById('mes-offres-container').innerHTML =
+      '<p style="color:#888;font-size:13px;">Aucun identifiant vendeur fourni dans l\'URL (vendeur_id=X).</p>';
+  }
 </script>
 
 </body>
