@@ -60,9 +60,10 @@ else if ($method == 'POST'){
             ':email' => $data['email'],
             ':postal_code' => $data['postal_code'] ?? null,
             ':role' => $data['role'] ?? 'acheteur',
-            ':password' => password_hash($data['password'], PASSWORD_DEFAULT)
+            ':password' => $data['password']
         ]);
-        echo json_encode(['success' => $result]);
+        $newId = $pdo->lastInsertId();
+        echo json_encode(['success' => $result, 'id' => $newId]);
     } else {
         echo json_encode(['error' => 'Action inconnue']);
     }
