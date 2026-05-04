@@ -22,9 +22,9 @@ try {
     $pdo->exec("DROP TABLE IF EXISTS utilisateurs");
     echo "Tables vidées avec succès.\n";
 
-    executeSqlFile($pdo, 'schema.sql');
+    executeSqlFile($pdo, '../database/schema.sql');
 
-    executeSqlFile($pdo, 'sampleData.sql');
+    executeSqlFile($pdo, '../database/sampleData.sql');
 
     echo "Base de données initialisée avec succès !\n";
 
