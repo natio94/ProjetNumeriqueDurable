@@ -126,7 +126,7 @@
       </div>
       <div class="form-actions">
         <span></span>
-        <button class="btn btn-primary">Enregistrer les modifications</button>
+        <button class="btn btn-primary" onclick="enregistrerModifications()" >Enregistrer les modifications</button>
       </div>
     </div>
 
@@ -142,7 +142,7 @@
     <div id="mes-offres-container">
       <p style="color:#888;font-size:13px;">Chargement de vos offres&hellip;</p>
     </div>
-    <div class="new-offer" onclick="publierNouvelleOffre()">+ Publier une nouvelle offre</div>
+    <div class="new-offer" onclick="publierNouvelleOffre()" >+ Publier une nouvelle offre</div>
   </div>
 
 </div>
@@ -150,6 +150,25 @@
 
 <script src="api/api.js"></script>
 <script>
+  function enregistrerModifications() {
+    const body = {
+      action: 'update',
+      id: vendeurId,
+      prenom: document.querySelector('input[type=text]').value,
+      nom: document.querySelectorAll('input[type=text]')[1].value,
+      email: document.querySelector('input[type=email]').value,
+      postal_code: document.querySelectorAll('input[type=text]')[2]?.value || ''
+    };
+    fetch('api/utilisateurs.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+            .then(r => r.json())
+            .then(d => alert(d.success ? 'Modifications enregistrées.' : (d.error || 'Erreur.'))
+            )
+            .catch(() => alert('Erreur de connexion au serveur.'));
+  }
   function showTab(name) {
     document.getElementById('panel-info').classList.remove('panel-active');
     document.getElementById('panel-offers').classList.remove('panel-active');
