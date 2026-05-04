@@ -8,6 +8,21 @@ function login(email, password) {
         .then(r => r.json())
 }
 
+function register({ prenom, nom, email, password, postal_code }) {
+    return fetch('api/utilisateurs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'create',
+            prenom, nom, email, postal_code,
+            role:"vendeur",
+            password: password
+            ,
+        })
+    })
+        .then(r => r.json());
+}
+
 function seDeconnecter(){
     localStorage.removeItem('session');
     window.location.href = 'index.html';
