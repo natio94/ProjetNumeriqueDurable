@@ -1,9 +1,7 @@
 <?php
 
-// Inclure la connexion DB
-require 'api/db.php';
+require 'db.php';
 
-// Fonction pour exécuter un fichier SQL
 function executeSqlFile($pdo, $filePath) {
     $sql = file_get_contents($filePath);
     if ($sql === false) {
@@ -18,16 +16,14 @@ function executeSqlFile($pdo, $filePath) {
 }
 
 try {
-    // Vider les tables (dans l'ordre inverse des dépendances)
+
     $pdo->exec("DROP TABLE IF EXISTS offres");
     $pdo->exec("DROP TABLE IF EXISTS categories");
     $pdo->exec("DROP TABLE IF EXISTS utilisateurs");
     echo "Tables vidées avec succès.\n";
 
-    // Recréer les tables à partir de schema.sql
     executeSqlFile($pdo, 'schema.sql');
 
-    // Insérer les données d'exemple à partir de sampleData.sql
     executeSqlFile($pdo, 'sampleData.sql');
 
     echo "Base de données initialisée avec succès !\n";

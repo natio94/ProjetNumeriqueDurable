@@ -1,12 +1,13 @@
 <?php
-$host = '127.0.0.1';
-$port = '3307';
-$dbname = 'marketplace';
-$user = 'root';
-$password = '';
-
 try {
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $password);
+    $pdo = new PDO(
+        'mysql:host=' . getenv('MYSQLHOST') .
+        ';port='      . getenv('MYSQLPORT') .
+        ';dbname='    . getenv('MYSQLDATABASE') .
+        ';charset=utf8',
+        getenv('MYSQLUSER'),
+        getenv('MYSQLPASSWORD')
+    );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
