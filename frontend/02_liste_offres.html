@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Liste des offres</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+  .nav-logo { font-size: 15px; font-weight: 600; }
+  .nav-links { display: flex; gap: 8px; }
+  .btn { padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; }
+  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  .search-bar { display: flex; gap: 10px; padding: 16px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+  .search-input { flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+  select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fff; color: #444; }
+
+  .filters { display: flex; gap: 8px; padding: 12px 24px; background: #f5f7f9; border-bottom: 1px solid #dde1e7; flex-wrap: wrap; }
+  .chip { padding: 5px 14px; border-radius: 999px; border: 1px solid #ccc; background: transparent; font-size: 12px; color: #555; cursor: pointer; }
+  .chip-active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  .results-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; font-size: 12px; color: #888; }
+
+  .main { padding: 16px 24px 32px; }
+  .offers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .offers-grid { grid-template-columns: 1fr 1fr; } }
+  .offer-card { background: #fff; border: 1px solid #dde1e7; border-radius: 8px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s; }
+  .offer-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .offer-body { padding: 10px 12px; }
+  .offer-title { font-size: 13px; font-weight: 500; }
+  .offer-price { font-size: 15px; font-weight: 700; margin-top: 4px; }
+  .offer-meta { display: flex; justify-content: space-between; margin-top: 4px; }
+  .offer-loc { font-size: 11px; color: #888; }
+  .offer-date { font-size: 11px; color: #bbb; }
+
+  .load-more { text-align: center; margin-top: 24px; }
+
+  .badge { display: inline-block; background: #fff3cd; border: 1px solid #f0c040; color: #7a5a00; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo" onclick="window.location='01_accueil.html'">RecycloMarché </span>
+  <div class="nav-links">
+    <button class="btn logged" id="account">Mon compte</button>
+    <button class="btn btn-primary logged" id="publish">+ Publier une annonce</button>
+    <button class="btn notLogged" id ="connect">Se connecter</button>
+    <button class="btn btn-primary notLogged" id="register">Créer un compte</button>
+  </div>
+</nav>
+
+<div class="search-bar">
+  <input class="search-input" id="search-input" type="text" placeholder="Rechercher une offre..." />
+  <select>
+    <option>Trier : plus récent</option>
+    <option>Prix croissant</option>
+    <option>Prix décroissant</option>
+  </select>
+  <button class="btn btn-primary" onclick="rechercherOffres()">Rechercher</button>
+</div>
+
+<div class="filters">
+  <span>Cat&eacute;gorie :</span>
+  <button class="chip chip-active" data-cat="" onclick="filtrerCategorie(this)">Toutes</button>
+  <button class="chip" data-cat="Electronique" onclick="filtrerCategorie(this)">&Eacute;lectronique</button>
+  <button class="chip" data-cat="Mobilier" onclick="filtrerCategorie(this)">Mobilier</button>
+  <button class="chip" data-cat="Vetements" onclick="filtrerCategorie(this)">V&ecirc;tements</button>
+  <button class="chip" data-cat="Sports" onclick="filtrerCategorie(this)">Sports &amp; Loisirs</button>
+  <button class="chip" data-cat="Livres" onclick="filtrerCategorie(this)">Livres</button>
+  <button class="chip" data-cat="Jardinage" onclick="filtrerCategorie(this)">Jardinage</button>
+  <button class="chip" data-cat="Autre" onclick="filtrerCategorie(this)">Autre</button>
+</div>
+
+<div class="results-bar">
+  <span id="results-count">Chargement…</span>
+</div>
+
+<div class="main">
+  <div class="offers-grid" id="offers-grid">
+    <p style="color:#888;font-size:13px;">Chargement des offres&hellip;</p>
+  </div>
+</div>
+
+<script src="../backend/api/api.js"></script>
+<script>
+  document.querySelectorAll(".logged").forEach(el => el.style.display = getSession() ? 'inline-block' : 'none');
+  document.querySelectorAll(".notLogged")
+    .forEach(el => el.style.display = !getSession() ? 'inline-block' : 'none');
+  // Boutons nav
+  document.querySelector('#account').onclick = () => {
+    const user = getSession();
+    window.location = user ? 'Gestion_compte.html?vendeur_id=' + user.id : 'Connexions_Inscriptions.html';
+  };
+  document.querySelector('#publish').onclick = () => {
+    const user = getSession();
+    if (!user) { window.location = 'Connexions_Inscriptions.html'; return; }
+    window.location = 'Gestion_compte.html?vendeur_id=' + user.id + '#publier';
+  };
+  document.querySelector('#connect').onclick = () => window.location = 'Connexions_Inscriptions.html';
+  document.querySelector('#register').onclick = () => window.location = 'Connexions_Inscriptions.html#register';
+
+  let toutesLesOffres = [];
+  let categorieActive = '';
+
+  function afficherOffres(offres) {
+    const grid = document.getElementById('offers-grid');
+    const count = document.getElementById('results-count');
+    count.textContent = offres.length + ' offre' + (offres.length > 1 ? 's' : '') + ' trouv' + (offres.length > 1 ? 'ées' : 'ée');
+    if (!offres.length) {
+      grid.innerHTML = '<p style="color:#888;font-size:13px;">Aucune offre ne correspond.</p>';
+      return;
+    }
+    grid.innerHTML = offres.map(o => `
+      <div class="offer-card" onclick="window.location='Detail_Offre.html?id=${o.id}'" style="cursor:pointer">
+        <div class="offer-body">
+          <div class="offer-title">${o.title}</div>
+          <div class="offer-price">${o.price} &euro;</div>
+          <div class="offer-meta">
+            <span class="offer-loc">${o.postal_code}</span>
+            <span class="offer-date">${o.categorie}</span>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function filtrerCategorie(btn) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('chip-active'));
+    btn.classList.add('chip-active');
+    categorieActive = btn.dataset.cat;
+    appliquerFiltres();
+  }
+
+  function appliquerFiltres() {
+    let resultats = toutesLesOffres;
+    if (categorieActive) {
+      resultats = resultats.filter(o =>
+        o.categorie && o.categorie.toLowerCase().includes(categorieActive.toLowerCase())
+      );
+    }
+    afficherOffres(resultats);
+  }
+
+  function rechercherOffres() {
+    const search = document.getElementById('search-input').value.trim();
+    document.getElementById('results-count').textContent = 'Recherche en cours…';
+    getOffres(search ?  search  : []).then(offres => {
+      toutesLesOffres = offres;
+      categorieActive = '';
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('chip-active'));
+      document.querySelector('.chip[data-cat=""]').classList.add('chip-active');
+      afficherOffres(toutesLesOffres);
+    }).catch(() => {
+      document.getElementById('offers-grid').innerHTML =
+        '<p style="color:#c00;font-size:13px;">Impossible de charger les offres.</p>';
+    });
+  }
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') rechercherOffres();
+  });
+
+  rechercherOffres();
+</script>
+</body>
+</html>

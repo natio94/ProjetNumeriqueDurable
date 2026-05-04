@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecycloMarché — Publier une offre</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+    /* ── NAV (identique aux autres pages) ── */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #fff; border-bottom: 1px solid #dde1e7; }
+    .nav-logo { font-size: 15px; font-weight: 600; cursor: pointer; }
+    .nav-links { display: flex; gap: 8px; }
+    .btn { padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; font-family: inherit; transition: all 0.15s; }
+    .btn:hover { border-color: #999; color: #1a1a1a; }
+    .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .btn-primary:hover { background: #333; }
+    .btn-danger { border-color: #c0392b; color: #c0392b; }
+    .btn-danger:hover { background: #fdf5f5; }
+    .btn-full { width: 100%; padding: 10px; font-size: 14px; }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb { padding: 10px 24px; font-size: 12px; color: #888; }
+    .breadcrumb a { color: #888; text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: #1a1a1a; }
+
+    /* ── LAYOUT ── */
+    .main { max-width: 760px; margin: 0 auto; padding: 8px 24px 40px; }
+    .page-header { margin-bottom: 20px; }
+    .page-title { font-size: 20px; font-weight: 700; }
+    .page-sub { font-size: 13px; color: #888; margin-top: 3px; }
+
+    /* ── FORM BLOCKS (identique Gestion_compte) ── */
+    .form-block { background: #fff; border: 1px solid #dde1e7; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+    .form-block-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: #1a1a1a; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 12px; font-weight: 500; color: #555; margin-bottom: 4px; }
+    input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; color: #1a1a1a; background: #fff; font-family: inherit; transition: border-color 0.15s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #1a1a1a; }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+    .form-hint { font-size: 11px; color: #aaa; margin-top: 3px; }
+    .required { color: #c0392b; }
+
+
+    /* ── PRICE ── */
+    .price-input-wrap { position: relative; }
+    .price-input-wrap input { padding-right: 36px; }
+    .price-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #888; pointer-events: none; }
+
+    /* ── ÉTAT / CATÉGORIE chips ── */
+    .chip-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip-opt { padding: 6px 14px; border-radius: 999px; border: 1px solid #ccc; font-size: 12px; cursor: pointer; font-family: inherit; background: transparent; color: #555; transition: all 0.12s; }
+    .chip-opt:hover { border-color: #1a1a1a; color: #1a1a1a; }
+    .chip-opt.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+
+    /* ── ACTIONS FOOTER ── */
+    .form-actions-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .form-actions-bar .right { display: flex; gap: 10px; }
+
+    /* ── DANGER ZONE (mode édition) ── */
+    .danger-zone { background: #fdf5f5; border: 1px solid #f5c0c0; border-radius: 8px; padding: 16px 20px; }
+    .danger-title { font-size: 13px; font-weight: 600; color: #c0392b; margin-bottom: 6px; }
+    .danger-desc { font-size: 12px; color: #888; margin-bottom: 12px; line-height: 1.5; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 11px 18px; border-radius: 7px; font-size: 13px; font-weight: 500; z-index: 99; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast-success { background: #1a1a1a; color: #fff; }
+    .toast-error { background: #c0392b; color: #fff; }
+
+    /* ── MODE CHARGEMENT ── */
+    #loading-state { text-align: center; padding: 60px 0; color: #888; font-size: 13px; }
+    #form-state { display: none; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo" onclick="window.location='01_accueil.html'">RecycloMarché</span>
+  <div class="nav-links">
+    <button class="btn" id="btn-back">← Mon compte</button>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a onclick="window.location='01_accueil.html'">Accueil</a> ›
+  <a id="bc-compte" onclick="">Mon compte</a> ›
+  <span id="bc-current">Publier une offre</span>
+</div>
+
+<div class="main">
+
+  <!-- Chargement -->
+  <div id="loading-state">Chargement…</div>
+
+  <!-- Formulaire -->
+  <div id="form-state">
+    <div class="page-header">
+      <div class="page-title" id="page-title">Publier une offre</div>
+      <div class="page-sub" id="page-sub">Remplissez les informations de votre article.</div>
+    </div>
+
+    <!-- BLOC 1 : Informations principales -->
+    <div class="form-block">
+      <div class="form-block-title">Informations principales</div>
+
+      <div class="form-group">
+        <label>Titre de l'annonce <span class="required">*</span></label>
+        <input type="text" id="f-title" placeholder="Ex : Ordinateur portable Dell XPS 13" maxlength="100" />
+        <div class="form-hint">Soyez précis : marque, modèle, état.</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Catégorie <span class="required">*</span></label>
+          <select id="f-category">
+            <option value="">— Choisir —</option>
+            <option value="1">Électronique</option>
+            <option value="2">Vêtements</option>
+            <option value="3">Livres</option>
+            <option value="4">Maison et Jardin</option>
+            <option value="5">Sports</option>
+            <option value="6">Alimentation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prix <span class="required">*</span></label>
+          <div class="price-input-wrap">
+            <input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" />
+            <span class="price-suffix">€</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description <span class="required">*</span></label>
+        <textarea id="f-desc" placeholder="Décrivez votre article : caractéristiques, défauts éventuels, raison de la vente…" maxlength="1000"></textarea>
+        <div class="form-hint"><span id="char-count">0</span> / 1000 caractères</div>
+      </div>
+    </div>
+
+    <!-- BLOC 4 : Actions -->
+    <div class="form-block">
+      <div class="form-actions-bar">
+        <button class="btn" onclick="annuler()">Annuler</button>
+        <div class="right">
+          <button class="btn" id="btn-brouillon" onclick="sauvegarderBrouillon()">Enregistrer comme brouillon</button>
+          <button class="btn btn-primary" id="btn-submit" onclick="soumettre()">Publier l'annonce</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOC 5 : Danger zone (mode édition seulement) -->
+    <div class="danger-zone" id="danger-zone" style="display:none;">
+      <div class="danger-title">Supprimer cette annonce</div>
+      <div class="danger-desc">La suppression est définitive. L'annonce ne sera plus visible par les acheteurs.</div>
+      <button class="btn btn-danger" onclick="supprimerOffre()">Supprimer définitivement l'annonce</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../backend/api/api.js"></script>
+<script>
+  // ── Paramètres URL ───
+  const params    = new URLSearchParams(window.location.search);
+  const offreId   = params.get('id');        // null = création, sinon = édition
+  const retourId  = params.get('vendeur_id');
+  const modeEdit  = !!offreId;
+
+  // ── Lien retour ─────
+  const retourUrl = retourId
+          ? 'Gestion_compte.html?vendeur_id=' + retourId
+          : 'Gestion_compte.html';
+
+  document.getElementById('btn-back').onclick = () => window.location = retourUrl;
+  document.getElementById('bc-compte').onclick = () => window.location = retourUrl;
+
+  // ── Adapte l'UI au mode ────
+  if (modeEdit) {
+    document.getElementById('page-title').textContent   = 'Modifier l\'annonce';
+    document.getElementById('page-sub').textContent     = 'Mettez à jour les informations de votre article.';
+    document.getElementById('bc-current').textContent   = 'Modifier l\'annonce';
+    document.getElementById('btn-submit').textContent   = 'Enregistrer les modifications';
+    document.getElementById('btn-brouillon').style.display = 'none';
+    document.getElementById('danger-zone').style.display   = '';
+    document.title = 'RecycloMarché — Modifier l\'annonce';
+  }
+
+
+
+  // ── Compteur description ────
+  const descEl = document.getElementById('f-desc');
+  const countEl = document.getElementById('char-count');
+  descEl.addEventListener('input', () => {
+    countEl.textContent = descEl.value.length;
+  });
+
+
+  // ── Chargement des données en mode édition ────
+  function chargerOffre() {
+    getOffresById(offreId).then(data => {
+      if (!data.length) { showToast('Offre introuvable.', 'error'); return; }
+      const o = data[0];
+      document.getElementById('f-title').value    = o.title;
+      document.getElementById('f-price').value    = o.price;
+      document.getElementById('f-category').value = o.category;
+      document.getElementById('f-desc').value     = o.description;
+      countEl.textContent = o.description.length;
+
+      afficherFormulaire();
+    }).catch(() => {
+      document.getElementById('loading-state').innerHTML =
+              '<p style="color:#c00;">Impossible de charger l\'offre.</p>';
+    });
+  }
+
+  function afficherFormulaire() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('form-state').style.display    = 'block';
+  }
+
+  // ── Validation ────
+  function valider() {
+    const title = document.getElementById('f-title').value.trim();
+    const cat   = document.getElementById('f-category').value;
+    const price = document.getElementById('f-price').value;
+    const desc  = document.getElementById('f-desc').value.trim();
+    if (!title)  { showToast('Le titre est requis.', 'error');       return false; }
+    if (!cat)    { showToast('Choisissez une catégorie.', 'error');  return false; }
+    if (!price || isNaN(parseFloat(price)) || parseFloat(price) < 0) {
+      showToast('Entrez un prix valide.', 'error'); return false;
+    }
+    if (!desc)   { showToast('La description est requise.', 'error'); return false; }
+    return true;
+  }
+
+  // ── Soumettre ────
+  function soumettre() {
+    if (!valider()) return;
+    const user = getSession();
+    if (!user) { window.location = 'Connexions_Inscriptions.html'; return; }
+
+    const payload = {
+      vendeur_id:  user.id,
+      title:       document.getElementById('f-title').value.trim(),
+      category:    parseInt(document.getElementById('f-category').value),
+      price:       parseFloat(document.getElementById('f-price').value),
+      description: document.getElementById('f-desc').value.trim(),
+    };
+
+    const action = modeEdit
+            ? updateOffre(offreId, payload)
+            : addOffre(payload);
+
+    action.then(() => {
+      showToast(modeEdit ? 'Annonce mise à jour ✓' : 'Annonce publiée ✓', 'success');
+      setTimeout(() => window.location = retourUrl, 900);
+    }).catch(err => showToast(err.message || 'Une erreur est survenue.', 'error'));
+  }
+
+  // ── Brouillon ───
+  function sauvegarderBrouillon() {
+    const draft = {
+      title:       document.getElementById('f-title').value,
+      category:    document.getElementById('f-category').value,
+      price:       document.getElementById('f-price').value,
+      description: document.getElementById('f-desc').value,
+    };
+    sessionStorage.setItem('rm_draft', JSON.stringify(draft));
+    showToast('Brouillon enregistré.', 'success');
+  }
+
+  // ── Supprimer (mode édition) ───
+  function supprimerOffre() {
+    if (!confirm('Supprimer définitivement cette annonce ?')) return;
+    deleteOffre(offreId).then(() => {
+      showToast('Annonce supprimée.', 'success');
+      setTimeout(() => window.location = retourUrl, 700);
+    }).catch(() => showToast('Erreur lors de la suppression.', 'error'));
+  }
+
+  // ── Annuler ────
+  function annuler() { window.location = retourUrl; }
+
+  // ── Toast ──
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show toast-' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── Restaurer brouillon si création ───
+  if (!modeEdit) {
+    const draft = sessionStorage.getItem('rm_draft');
+    if (draft) {
+      try {
+        const d = JSON.parse(draft);
+        if (d.title)       document.getElementById('f-title').value    = d.title;
+        if (d.category)    document.getElementById('f-category').value = d.category;
+        if (d.price)       document.getElementById('f-price').value    = d.price;
+        if (d.description) document.getElementById('f-desc').value     = d.description;
+        countEl.textContent = (d.description || '').length;
+      } catch {}
+    }
+    const user = getSession();
+    afficherFormulaire();
+  } else {
+    chargerOffre();
+  }
+</script>
+</body>
+</html>
