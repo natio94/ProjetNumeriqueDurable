@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe &mdash; Interface d'administration</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: #1a1a1a; color: #fff; }
+  .nav-logo { font-size: 15px; font-weight: 600; }
+  .nav-right { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #bbb; }
+  .btn-light { padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid #555; background: transparent; color: #ccc; }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 28px 24px; }
+  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .page-sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 700px) { .metrics { grid-template-columns: 1fr 1fr; } }
+  .metric { background: #fff; border: 1px solid #dde1e7; border-radius: 8px; padding: 16px; }
+  .metric-val { font-size: 28px; font-weight: 700; }
+  .metric-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+  .tabs { display: flex; border-bottom: 1px solid #dde1e7; margin-bottom: 16px; }
+  .tab { padding: 10px 16px; font-size: 13px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+  .tab-active { color: #1a1a1a; font-weight: 600; border-bottom-color: #1a1a1a; }
+
+  .panel { display: none; }
+  .panel-active { display: block; }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .search-input { padding: 7px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; width: 240px; }
+  .btn { padding: 7px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: transparent; color: #444; }
+  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-danger-sm { padding: 4px 10px; font-size: 12px; border: 1px solid #c0392b; color: #c0392b; border-radius: 6px; background: transparent; cursor: pointer; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dde1e7; border-radius: 8px; overflow: hidden; font-size: 13px; }
+  thead { background: #f5f7f9; }
+  th { text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 600; color: #555; border-bottom: 1px solid #dde1e7; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e8ecf0; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f5f7f9; }
+
+  .status-active { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef8ee; color: #3a8a3a; border: 1px solid #b5d5b5; }
+  .action-cell { display: flex; gap: 6px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">RecycloMarch&eacute; &middot; Administration</span>
+  <div class="nav-right">
+    <span>Administration</span>
+    <button class="btn-light">Se d&eacute;connecter</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <div class="page-title">Tableau de bord</div>
+  <div class="page-sub">Vue globale de la plateforme.</div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-val" id="stat-vendeurs">…</div><div class="metric-label">Comptes vendeurs</div></div>
+    <div class="metric"><div class="metric-val" id="stat-offres">…</div><div class="metric-label">Offres actives</div></div>
+    <div class="metric"><div class="metric-val">—</div><div class="metric-label">Offres expir&eacute;es</div></div>
+    <div class="metric"><div class="metric-val">—</div><div class="metric-label">Nouveaux aujourd'hui</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab tab-active" onclick="showTab('accounts', this)">Comptes vendeurs</div>
+    <div class="tab" onclick="showTab('offers', this)">Toutes les offres</div>
+  </div>
+
+  <!-- PANEL : COMPTES -->
+  <div id="panel-accounts" class="panel panel-active">
+    <div class="toolbar">
+      <input class="search-input" id="search-accounts" type="text" placeholder="Rechercher un compte..." oninput="filtrerComptes()" />
+      <button class="btn btn-primary">+ Cr&eacute;er un compte</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Pr&eacute;nom</th>
+          <th>Nom</th>
+          <th>Code postal</th>
+          <th>R&ocirc;le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-accounts">
+        <tr><td colspan="5" style="color:#888;text-align:center;">Chargement&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PANEL : OFFRES -->
+  <div id="panel-offers" class="panel">
+    <div class="toolbar">
+      <input class="search-input" id="search-offers" type="text" placeholder="Rechercher une offre..." oninput="filtrerOffres()" />
+      <button class="btn btn-primary">+ Cr&eacute;er une offre</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Vendeur</th>
+          <th>Cat&eacute;gorie</th>
+          <th>Prix</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-offers">
+        <tr><td colspan="5" style="color:#888;text-align:center;">Chargement&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="../backend/api/api.js"></script>
+<script>
+  // Vérification admin
+  const adminUser = getSession();
+  if (adminUser) {
+    document.querySelector('.nav-right span').textContent =
+      (adminUser.prenom || '') + ' ' + (adminUser.nom || '') + ' · Admin';
+  }
+
+  let tousLesComptes = [];
+  let toutesLesOffres = [];
+
+  function showTab(name, btn) {
+    document.getElementById('panel-accounts').classList.remove('panel-active');
+    document.getElementById('panel-offers').classList.remove('panel-active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+    document.getElementById('panel-' + name).classList.add('panel-active');
+    btn.classList.add('tab-active');
+  }
+
+  // Bouton déconnexion
+  document.querySelector('.btn-light').onclick = () => {
+    setSession(null);
+    window.location = '01_accueil.html';
+  };
+
+  // Boutons "+ Créer" 
+  document.querySelectorAll('.toolbar .btn-primary')[0].onclick = () =>
+    alert('Création de compte : à connecter au backend (POST api/vendeurs.php).');
+  document.querySelectorAll('.toolbar .btn-primary')[1].onclick = () =>
+    window.location = 'Offre_Form.html';
+
+  function ligneCompte(v) {
+    return `<tr id="compte-row-${v.id}">
+      <td>${v.prenom || '—'}</td>
+      <td>${v.nom || '—'}</td>
+      <td>${v.postal_code || '—'}</td>
+      <td><span class="status-active">${v.role || 'vendeur'}</span></td>
+      <td><div class="action-cell">
+        <button class="btn btn-sm"
+          onclick="window.location='Gestion_compte.html?vendeur_id=${v.id}'">
+          Voir compte
+        </button>
+        <button class="btn-danger-sm" onclick="supprimerCompte(${v.id})">Supprimer</button>
+      </div></td>
+    </tr>`;
+  }
+
+  function ligneOffre(o) {
+    return `<tr id="offre-row-${o.id}">
+      <td>${o.title}</td>
+      <td>${o.prenom || ''} ${o.nom ? o.nom[0] + '.' : ''}</td>
+      <td>${o.categorie || '—'}</td>
+      <td>${o.price} &euro;</td>
+      <td><div class="action-cell">
+        <button class="btn btn-sm"
+          onclick="window.location='Offre_Form.html?id=${o.id}'">
+          Modifier
+        </button>
+        <button class="btn-danger-sm" onclick="supprimerOffre(${o.id})">Supprimer</button>
+      </div></td>
+    </tr>`;
+  }
+
+  function filtrerComptes() {
+    const q = document.getElementById('search-accounts').value.toLowerCase();
+    const resultats = tousLesComptes.filter(v =>
+      (v.nom||'').toLowerCase().includes(q) ||
+      (v.prenom||'').toLowerCase().includes(q) ||
+      (v.postal_code||'').toLowerCase().includes(q)
+    );
+    document.getElementById('tbody-accounts').innerHTML =
+      resultats.length ? resultats.map(ligneCompte).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun résultat.</td></tr>';
+  }
+
+  function filtrerOffres() {
+    const q = document.getElementById('search-offers').value.toLowerCase();
+    const resultats = toutesLesOffres.filter(o =>
+      (o.title||'').toLowerCase().includes(q) ||
+      (o.categorie||'').toLowerCase().includes(q)
+    );
+    document.getElementById('tbody-offers').innerHTML =
+      resultats.length ? resultats.map(ligneOffre).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun résultat.</td></tr>';
+  }
+
+  function supprimerCompte(id) {
+    if (!confirm('Supprimer ce compte et toutes ses offres ?')) return;
+    deleteUser(id).then(() => {
+      tousLesComptes = tousLesComptes.filter(v => v.id !== id);
+      toutesLesOffres = toutesLesOffres.filter(o => o.vendeur_id !== id);
+      document.getElementById('stat-vendeurs').textContent = tousLesComptes.filter(v => v.role === 'vendeur').length;
+      document.getElementById('stat-offres').textContent = toutesLesOffres.length;
+      document.getElementById('tbody-accounts').innerHTML = tousLesComptes.map(ligneCompte).join('') ||
+        '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun compte.</td></tr>';
+      document.getElementById('tbody-offers').innerHTML = toutesLesOffres.map(ligneOffre).join('') ||
+        '<tr><td colspan="5" style="color:#888;text-align:center;">Aucune offre.</td></tr>';
+    });
+  }
+
+  function supprimerOffre(id) {
+    if (!confirm('Supprimer définitivement cette offre ?')) return;
+    deleteOffre(id).then(() => {
+      toutesLesOffres = toutesLesOffres.filter(o => o.id !== id);
+      document.getElementById('stat-offres').textContent = toutesLesOffres.length;
+      document.getElementById('tbody-offers').innerHTML = toutesLesOffres.map(ligneOffre).join('') ||
+        '<tr><td colspan="5" style="color:#888;text-align:center;">Aucune offre.</td></tr>';
+    });
+  }
+
+  // Chargement
+  Promise.all([
+    getAllUsers(),
+    getOffres()
+  ]).then(([users, offres]) => {
+    tousLesComptes  = users.filter(u => u.role !== 'admin');
+    toutesLesOffres = offres;
+
+    document.getElementById('stat-vendeurs').textContent =
+      tousLesComptes.filter(v => v.role === 'vendeur').length;
+    document.getElementById('stat-offres').textContent = offres.length;
+
+    document.getElementById('tbody-accounts').innerHTML =
+      tousLesComptes.length ? tousLesComptes.map(ligneCompte).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucun compte.</td></tr>';
+    document.getElementById('tbody-offers').innerHTML =
+      offres.length ? offres.map(ligneOffre).join('') :
+      '<tr><td colspan="5" style="color:#888;text-align:center;">Aucune offre.</td></tr>';
+  }).catch(() => {
+    document.getElementById('tbody-accounts').innerHTML =
+      '<tr><td colspan="5" style="color:#c00;text-align:center;">Erreur de chargement.</td></tr>';
+  });
+</script>
+
+</body>
+</html>
