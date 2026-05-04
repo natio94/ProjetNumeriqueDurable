@@ -80,14 +80,14 @@
 <body>
 
 <nav class="nav">
-  <span class="nav-logo" onclick="window.location='01_accueil.html'">RecycloMarché</span>
+  <span class="nav-logo" onclick="window.location='index.html'">RecycloMarché</span>
   <div class="nav-links">
     <button class="btn" id="btn-back">← Mon compte</button>
   </div>
 </nav>
 
 <div class="breadcrumb">
-  <a onclick="window.location='01_accueil.html'">Accueil</a> ›
+  <a onclick="window.location='index.html'">Accueil</a> ›
   <a id="bc-compte" onclick="">Mon compte</a> ›
   <span id="bc-current">Publier une offre</span>
 </div>
@@ -166,7 +166,7 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../backend/api/api.js"></script>
+<script src="api/api.js"></script>
 <script>
   // ── Paramètres URL ───
   const params    = new URLSearchParams(window.location.search);

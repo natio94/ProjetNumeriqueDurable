@@ -39,14 +39,14 @@
 <body>
 
 <nav class="nav">
-  <span class="nav-logo" style="cursor:pointer" onclick="window.location='01_accueil.html'">RecycloMarché</span>
+  <span class="nav-logo" style="cursor:pointer" onclick="window.location='index.html'">RecycloMarché</span>
   <div>
-    <button class="btn" onclick="window.location='02_liste_offres.html'">&larr; Retour aux offres</button>
+    <button class="btn" onclick="window.location='liste_offres.html'">&larr; Retour aux offres</button>
   </div>
 </nav>
 
 <div class="breadcrumb">
-  <a href="01_accueil.html">Accueil</a> &rsaquo; <span id="breadcrumb-cat"></span> &rsaquo; <span id="breadcrumb-title">&hellip;</span>
+  <a href="index.html">Accueil</a> &rsaquo; <span id="breadcrumb-cat"></span> &rsaquo; <span id="breadcrumb-title">&hellip;</span>
 </div>
 
 <div class="main" id="main-content" style="display:none">
@@ -74,7 +74,7 @@
 
 <p id="msg-statut" style="text-align:center;padding:40px;color:#888;font-size:13px;">Chargement de l'offre&hellip;</p>
 
-<script src="../backend/api/api.js"></script>
+<script src="api/api.js"></script>
 <script>
   const id = new URLSearchParams(window.location.search).get('id');
 

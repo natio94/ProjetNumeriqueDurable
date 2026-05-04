@@ -10,7 +10,7 @@ function login(email, password) {
 
 function seDeconnecter(){
     localStorage.removeItem('session');
-    window.location.href = '01_accueil.html';
+    window.location.href = 'index.html';
 }
 
 function getSession() {

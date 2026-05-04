@@ -77,13 +77,13 @@
 <footer>
   RecycloMarché · Marketplace entre particuliers · Zéro publicité · Données minimales
 </footer>
-<script src="../backend/api/api.js"></script>
+<script src="api/api.js"></script>
 <script>
   document.querySelectorAll(".logged").forEach(el => el.style.display = getSession() ? 'inline-block' : 'none');
   document.querySelectorAll(".notLogged")
           .forEach(el => el.style.display = !getSession() ? 'inline-block' : 'none');
   // Boutons nav
-  document.querySelector('#search').onclick = () => window.location = '02_liste_offres.html';
+  document.querySelector('#search').onclick = () => window.location = 'liste_offres.html';
   document.querySelector('#connect').onclick = () => window.location = 'Connexions_Inscriptions.html';
   document.querySelector('#register').onclick     = () => window.location = 'Connexions_Inscriptions.html#register';
   document.querySelector('#account').onclick = () => {
@@ -91,7 +91,7 @@
     window.location = user ? 'Gestion_compte.html?vendeur_id=' + user.id : 'Connexions_Inscriptions.html';
   };
   // Boutons hero
-  document.querySelectorAll('.hero-ctas .btn')[0].onclick = () => window.location = '02_liste_offres.html';
+  document.querySelectorAll('.hero-ctas .btn')[0].onclick = () => window.location = 'liste_offres.html';
   document.querySelectorAll('.hero-ctas .btn')[1].onclick = () => {
     const user = getSession();
     if (!user) { window.location = 'Connexions_Inscriptions.html'; return; }
@@ -99,7 +99,7 @@
   };
 
   // Bouton "Voir toutes les offres"
-  document.querySelector('.section .btn').onclick = () => window.location = '02_liste_offres.html';
+  document.querySelector('.section .btn').onclick = () => window.location = 'liste_offres.html';
 
   // Chargement des offres via MockAPI
   getOffres().then(offres => {

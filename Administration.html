@@ -121,7 +121,7 @@
 
 </div>
 
-<script src="../backend/api/api.js"></script>
+<script src="api/api.js"></script>
 <script>
   // Vérification admin
   const adminUser = getSession();
@@ -144,7 +144,7 @@
   // Bouton déconnexion
   document.querySelector('.btn-light').onclick = () => {
     setSession(null);
-    window.location = '01_accueil.html';
+    window.location = 'index.html';
   };
 
   // Boutons "+ Créer" 

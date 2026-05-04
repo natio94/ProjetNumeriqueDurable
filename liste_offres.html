@@ -45,7 +45,7 @@
 <body>
 
 <nav class="nav">
-  <span class="nav-logo" onclick="window.location='01_accueil.html'">RecycloMarché </span>
+  <span class="nav-logo" onclick="window.location='index.html'">RecycloMarché </span>
   <div class="nav-links">
     <button class="btn logged" id="account">Mon compte</button>
     <button class="btn btn-primary logged" id="publish">+ Publier une annonce</button>
@@ -86,7 +86,7 @@
   </div>
 </div>
 
-<script src="../backend/api/api.js"></script>
+<script src="api/api.js"></script>
 <script>
   document.querySelectorAll(".logged").forEach(el => el.style.display = getSession() ? 'inline-block' : 'none');
   document.querySelectorAll(".notLogged")
